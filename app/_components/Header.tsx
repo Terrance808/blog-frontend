@@ -1,5 +1,3 @@
-"use client";
-
 import { Fragment } from 'react';
 import Toolbar from '@mui/material/Toolbar';
 import Button from '@mui/material/Button';
