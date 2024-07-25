@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, useEffect } from 'react';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import GitHubIcon from '@mui/icons-material/GitHub';
@@ -5,7 +8,7 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import XIcon from '@mui/icons-material/X';
 import Header from './_components/Header';
 import MainFeaturedPost from './_components/MainFeaturedPost';
-import MainPosts from './_components/MainPosts';
+import RecentPosts from './_components/RecentPosts';
 import Sidebar from './_components/Sidebar';
 import Footer from './_components/Footer';
 
@@ -32,67 +35,6 @@ const mainFeaturedPost = {
   linkText: 'Continue reading…',
 };
 
-const featuredPosts = [
-  {
-    title: 'Featured post',
-    date: 'Nov 12',
-    description:
-      'This is a wider card with supporting text below as a natural lead-in to additional content.',
-    image: 'https://source.unsplash.com/random?wallpapers',
-    imageLabel: 'Image Text',
-  },
-  {
-    title: 'Post title',
-    date: 'Nov 11',
-    description:
-      'This is a wider card with supporting text below as a natural lead-in to additional content.',
-    image: 'https://source.unsplash.com/random?wallpapers',
-    imageLabel: 'Image Text',
-  },
-];
-
-const mainPosts = [
-  {
-    title: 'Sample blog post',
-    date: 'April 1, 2020',
-    content: `
-      This blog post shows a few different types of content that are supported and styled with
-      Material styles. Basic typography, images, and code are all supported.
-      You can extend these by modifying.
-
-      Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
-      Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum.
-      Sed posuere consectetur est at lobortis. Cras mattis consectetur purus sit amet fermentum.
-    `
-  },
-  {
-    title: 'Another blog post',
-    date: 'March 23, 2020',
-    content: `
-      Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
-      Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum.
-      Sed posuere consectetur est at lobortis. Cras mattis consectetur purus sit amet fermentum.
-    `
-  },
-  {
-    title: 'New feature',
-    date: 'March 14, 2020',
-    content: `
-      This blog post shows a few different types of content that are supported and styled with
-      Material styles. Basic typography, images, and code are all supported.
-      You can extend these by modifying.
-      This blog post shows a few different types of content that are supported and styled with
-      Material styles. Basic typography, images, and code are all supported.
-      You can extend these by modifying.
-      This blog post shows a few different types of content that are supported and styled with
-      Material styles. Basic typography, images, and code are all supported.
-      You can extend these by modifying.
-      This blog post shows a few different types of content that are supported and styled with
-      Material styles. Basic typography, images, and code are all supported.
-      You can extend these by modifying.
-    `
-  }
-];
 
 const sidebar = {
   title: 'About',
@@ -119,6 +61,25 @@ const sidebar = {
 };
 
 export default function Home() {
+  const [recentPosts, setRecentPosts] = useState([]);
+
+  async function fetchMainPosts() {
+    try {
+      const response = await fetch('http://localhost:3001/front-page');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      setRecentPosts(data);
+    } catch (error) {
+      console.error('Error fetching main posts:', error);
+    }
+  }
+
+  useEffect(() => {
+    fetchMainPosts();
+  }, []);
+
   return (
     <>
       <Container maxWidth="lg">
@@ -126,7 +87,7 @@ export default function Home() {
         <main>
           <MainFeaturedPost post={mainFeaturedPost} />
           <Grid container spacing={5} sx={{ mt: 3 }}>
-            <MainPosts title="From the firehose" posts={mainPosts} />
+            <RecentPosts title="From the firehose" posts={recentPosts} />
             <Sidebar
               title={sidebar.title}
               description={sidebar.description}
